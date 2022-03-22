@@ -1,18 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <com.microsoft.fluentui.appbarlayout.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/demo_detail_scrollable_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:importantForAccessibility="no"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_margin="@dimen/default_layout_margin">
+
+            <!-- 标题字体 -->
+            <TextView
+                style="@style/TextAppearance.FluentUI.Headline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/demo_headline_padding_bottom"
+                android:text="Fluent UI 学习 //大标题" />
+
+            <!-- 分隔线 -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/demo_headline_divider_height"
+                android:layout_marginBottom="@dimen/default_layout_margin"
+                android:background="@drawable/ms_row_divider" />
+
+            <TextView
+                style="@style/TextAppearance.FluentUI.Title1"
+                android:layout_marginBottom="@dimen/demo_headline_padding_bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Snack Bar 快餐栏学习 //一级标题"/>
+
+            <TextView
+                android:id="@+id/date_text_view"
+                style="@style/TextAppearance.FluentUI.SubHeading1"
+                android:layout_marginBottom="@dimen/default_layout_margin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="备注:待填充 //一级副标题" />
+
+            <com.microsoft.fluentui.widget.Button
+                android:id="@+id/btn_snack_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_view_margin"
+                android:text="SnackBar 快餐栏" />
+
+            <TextView
+                style="@style/TextAppearance.FluentUI.Title1"
+                android:layout_marginBottom="@dimen/demo_headline_padding_bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_layout_margin"
+                android:text="App Bar 应用栏学习"/>
+
+
+            <com.microsoft.fluentui.widget.Button
+                android:id="@+id/btn_app_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_view_margin"
+                android:text="AppBar 应用栏" />
+
+            <TextView
+                style="@style/TextAppearance.FluentUI.Title1"
+                android:layout_marginBottom="@dimen/demo_headline_padding_bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_layout_margin"
+                android:text="ActionBarLayout 动作栏布局学习"/>
+
+
+            <com.microsoft.fluentui.widget.Button
+                android:id="@+id/btn_action_bar_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_view_margin"
+                android:text="ActionBarLayout 动作栏布局" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

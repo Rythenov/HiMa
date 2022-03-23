@@ -1,8 +1,9 @@
-package com.jermyn.hima;
+package com.jermyn.hima.base;
 
 import android.app.Application;
 import android.content.Context;
 
+import com.jermyn.hima.utils.LogUtils;
 import com.ximalaya.ting.android.opensdk.datatrasfer.CommonRequest;
 import com.ximalaya.ting.android.opensdk.datatrasfer.DeviceInfoProviderDefault;
 
@@ -21,6 +22,12 @@ public class HiMaApplication extends Application {
         super.onCreate();
         app = this;
         mContext = getApplicationContext();
+        initXimalaya();
+        LogUtils.init("HiMa", false);
+
+    }
+
+    private void initXimalaya() {
         CommonRequest mXimalaya = CommonRequest.getInstanse();
         mXimalaya.setAppkey(APP_KEY);
         mXimalaya.setPackid(PACK_ID);

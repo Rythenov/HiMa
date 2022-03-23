@@ -195,9 +195,9 @@
          color values -->
     <style name="FluentUIDemo.TabLayout" parent="">
         <item name="fluentui_containerBackgroundColor">?attr/fluentuiBackgroundPrimaryColor</item>
-        <item name="fluentui_tabsBackgroundColor">@color/fluentui_communication_shade_10</item>
+        <item name="fluentui_tabsBackgroundColor">#6b5152</item>
         <item name="fluentui_tabSelectedBackgroundColor">?attr/fluentuiBackgroundColor</item>
-        <item name="fluentui_tabUnselectedBackgroundColor">@color/fluentui_communication_shade_10</item>
+        <item name="fluentui_tabUnselectedBackgroundColor">#6b5152</item>
         <item name="fluentui_tabSelectedTextColor">?attr/fluentuiBackgroundPrimaryColor</item>
         <item name="fluentui_tabUnselectedTextColor">?attr/fluentuiBackgroundColor</item>
     </style>

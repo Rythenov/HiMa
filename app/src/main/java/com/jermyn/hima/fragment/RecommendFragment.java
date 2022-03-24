@@ -2,69 +2,117 @@ package com.jermyn.hima.fragment;
 
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.jermyn.hima.R;
+import com.jermyn.hima.adapter.RecommendAdapter;
+import com.jermyn.hima.list.FluentListAdapter;
+import com.jermyn.hima.presenter.RecommendPresenter;
+import com.jermyn.hima.utils.Constants;
+import com.ximalaya.ting.android.opensdk.constants.DTransferConstants;
+import com.ximalaya.ting.android.opensdk.datatrasfer.CommonRequest;
+import com.ximalaya.ting.android.opensdk.datatrasfer.IDataCallBack;
+import com.ximalaya.ting.android.opensdk.model.album.Album;
+import com.ximalaya.ting.android.opensdk.model.album.GussLikeAlbumList;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link RecommendFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+
 public class RecommendFragment extends Fragment {
+
+    @BindView(R.id.recycler_view)
+    RecyclerView _recyclerView;
+
+    private static final String TAG = "RECOMMEND_FRAGMENT";
+
     private View _rootView;
+    private RecommendAdapter _adapter;
+    private RecommendPresenter _recommendPresenter;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public RecommendFragment() {
-        // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment RecommendFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static RecommendFragment newInstance(String param1, String param2) {
-        RecommendFragment fragment = new RecommendFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         if (_rootView == null) {
             _rootView = inflater.inflate(R.layout.fragment_recommend, container, false);
         }
+        ButterKnife.bind(this, _rootView);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        _recyclerView.setLayoutManager(linearLayoutManager);
+
+        _adapter = new RecommendAdapter();
+
+        _recyclerView.setAdapter(_adapter);
+
+        _recommendPresenter = RecommendPresenter.getInstance();
+        _recommendPresenter.getRecommendList();
+
         return _rootView;
     }
+
+    /**
+     * 获取推荐内容
+     * 3.10.6
+     */
+    private void getRecommendData() {
+
+
+
+
+
+
+
+        Map<String, String> map = new HashMap<>();
+        //获取条数
+        map.put(DTransferConstants.LIKE_COUNT, Constants.GUESS_LIKE_COUNT);
+        CommonRequest.getGuessLikeAlbum(map, new IDataCallBack<GussLikeAlbumList>() {
+
+            @Override
+            public void onSuccess(@Nullable GussLikeAlbumList gussLikeAlbumList) {
+                if (gussLikeAlbumList != null) {
+                    List<Album> albumList = gussLikeAlbumList.getAlbumList();
+                    if (albumList != null) {
+                        Log.d(TAG, "GET GUESS LIKE ALBUM SUCC:" + albumList.size());
+                        updateUI(albumList);
+                    }
+                }
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                Log.e(TAG, "ERROR:" + i);
+                Log.e(TAG, "ERROR MSG:" + s);
+            }
+        });
+    }
+
+    private void updateUI(List<Album> albumList) {
+
+    }
+
+
 }

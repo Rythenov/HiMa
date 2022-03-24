@@ -43,6 +43,9 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MAIN_ACTIVITY";
 
+    @BindView(R.id.root_view)
+    View rootView;
+
     @BindView(R.id.app_bar)
     AppBarLayout appBar;
 
@@ -117,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         List<Fragment> viewList = new ArrayList<>();
-        viewList.add(new RecommendFragment());
+        viewList.add(new RecommendFragment(rootView));
         viewList.add(new SubscriptionFragment());
         viewList.add(new HistoryFragment());
 

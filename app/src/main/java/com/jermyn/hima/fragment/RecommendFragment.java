@@ -2,8 +2,10 @@ package com.jermyn.hima.fragment;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -12,11 +14,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.jermyn.hima.R;
 import com.jermyn.hima.adapter.RecommendAdapter;
+import com.jermyn.hima.interfaces.IRecommendViewCallBack;
 import com.jermyn.hima.list.FluentListAdapter;
 import com.jermyn.hima.presenter.RecommendPresenter;
 import com.jermyn.hima.utils.Constants;
+import com.microsoft.fluentui.listitem.ListItemDivider;
+import com.microsoft.fluentui.snackbar.Snackbar;
 import com.ximalaya.ting.android.opensdk.constants.DTransferConstants;
 import com.ximalaya.ting.android.opensdk.datatrasfer.CommonRequest;
 import com.ximalaya.ting.android.opensdk.datatrasfer.IDataCallBack;
@@ -31,7 +38,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class RecommendFragment extends Fragment {
+public class RecommendFragment extends Fragment implements IRecommendViewCallBack {
 
     @BindView(R.id.recycler_view)
     RecyclerView _recyclerView;
@@ -39,11 +46,13 @@ public class RecommendFragment extends Fragment {
     private static final String TAG = "RECOMMEND_FRAGMENT";
 
     private View _rootView;
+    private View _parentRootView;
     private RecommendAdapter _adapter;
     private RecommendPresenter _recommendPresenter;
 
 
-    public RecommendFragment() {
+    public RecommendFragment(View parentRootView) {
+        _parentRootView = parentRootView;
     }
 
 
@@ -64,55 +73,48 @@ public class RecommendFragment extends Fragment {
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         _recyclerView.setLayoutManager(linearLayoutManager);
 
-        _adapter = new RecommendAdapter();
+        _adapter = new RecommendAdapter(_parentRootView, getContext());
 
         _recyclerView.setAdapter(_adapter);
 
+        _recyclerView.addItemDecoration(new ListItemDivider(getContext(), DividerItemDecoration.VERTICAL));
+
+        _adapter.setOnItemClickListener((adapter, view, position) -> {
+            Album album = ((Album)adapter.getData().get(position));
+            String str = album.getAlbumTitle();
+            Snackbar.Companion.make(_rootView, str, Snackbar.LENGTH_SHORT, Snackbar.Style.REGULAR).show();
+        });
+
         _recommendPresenter = RecommendPresenter.getInstance();
+        _recommendPresenter.registerViewCallBack(this);
         _recommendPresenter.getRecommendList();
+
 
         return _rootView;
     }
 
-    /**
-     * 获取推荐内容
-     * 3.10.6
-     */
-    private void getRecommendData() {
 
-
-
-
-
-
-
-        Map<String, String> map = new HashMap<>();
-        //获取条数
-        map.put(DTransferConstants.LIKE_COUNT, Constants.GUESS_LIKE_COUNT);
-        CommonRequest.getGuessLikeAlbum(map, new IDataCallBack<GussLikeAlbumList>() {
-
-            @Override
-            public void onSuccess(@Nullable GussLikeAlbumList gussLikeAlbumList) {
-                if (gussLikeAlbumList != null) {
-                    List<Album> albumList = gussLikeAlbumList.getAlbumList();
-                    if (albumList != null) {
-                        Log.d(TAG, "GET GUESS LIKE ALBUM SUCC:" + albumList.size());
-                        updateUI(albumList);
-                    }
-                }
-            }
-
-            @Override
-            public void onError(int i, String s) {
-                Log.e(TAG, "ERROR:" + i);
-                Log.e(TAG, "ERROR MSG:" + s);
-            }
-        });
+    @Override
+    public void onRecommendListLoaded(List<Album> result) {
+        _adapter.setList(result);
+        _adapter.notifyDataSetChanged();
     }
 
-    private void updateUI(List<Album> albumList) {
+    @Override
+    public void onLoadedMore(List<Album> result) {
 
     }
 
+    @Override
+    public void onRefreshed(List<Album> result) {
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (_recommendPresenter != null) {
+            _recommendPresenter.unRegisterViewCallBack(this);
+        }
+    }
 }

@@ -31,7 +31,7 @@ public class ListItem extends IListItem {
         this.layoutDensity = ListItemView.Companion.getDEFAULT_LAYOUT_DENSITY();
     }
 
-    public ListItem(String title//: String
+    public static ListItem createListItem(String title//: String
             , String subtitle//: String = ""
             , String footer//: String = ""
             , View customView//: View? = null
@@ -43,28 +43,32 @@ public class ListItem extends IListItem {
             , ListItemView.LayoutDensity layoutDensity//:  = DEFAULT_LAYOUT_DENSITY
             , Boolean wrap//: Boolean = false
     ) {
-        this.subtitle = subtitle;
-        this.footer = footer;
-        this.layoutDensity = layoutDensity;
-        this.customAccessoryView = customAccessoryView;
-        this.customView = customView;
-        this.customViewSize = customViewSize;
-        this.customSecondarySubtitleView = customSecondarySubtitleView;
+        ListItem listItem = new ListItem(title);
+        listItem.title = title;
+        listItem.subtitle = subtitle;
+        listItem.footer = footer;
+        listItem.layoutDensity = layoutDensity;
+        listItem.customAccessoryView = customAccessoryView;
+        listItem.customView = customView;
+        listItem.customViewSize = customViewSize;
+        listItem.customSecondarySubtitleView = customSecondarySubtitleView;
 
         if (wrap) {
-            this.titleMaxLines = 4;
-            this.subtitleMaxLines = 4;
-            this.footerMaxLines = 4;
+            listItem.titleMaxLines = 4;
+            listItem.subtitleMaxLines = 4;
+            listItem.footerMaxLines = 4;
         } else {
-            this.titleTruncateAt = TextUtils.TruncateAt.MIDDLE;
+            listItem.titleTruncateAt = TextUtils.TruncateAt.MIDDLE;
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
                 // In earlier APIs this crashes with an ArrayIndexOutOfBoundsException
-                this.subtitleTruncateAt = TextUtils.TruncateAt.START;
+                listItem.subtitleTruncateAt = TextUtils.TruncateAt.START;
             }
         }
 
-        if (addCustomAccessoryViewClick && customAccessoryView != null)
+        if (addCustomAccessoryViewClick && customAccessoryView != null) {
             customAccessoryView.setOnClickListener(listener);
+        }
+        return listItem;
     }
 
 

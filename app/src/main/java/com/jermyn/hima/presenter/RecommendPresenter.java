@@ -1,7 +1,22 @@
 package com.jermyn.hima.presenter;
 
+import android.util.Log;
+
+import androidx.annotation.Nullable;
+
 import com.jermyn.hima.interfaces.IRecommendPresenter;
 import com.jermyn.hima.interfaces.IRecommendViewCallBack;
+import com.jermyn.hima.utils.Constants;
+import com.ximalaya.ting.android.opensdk.constants.DTransferConstants;
+import com.ximalaya.ting.android.opensdk.datatrasfer.CommonRequest;
+import com.ximalaya.ting.android.opensdk.datatrasfer.IDataCallBack;
+import com.ximalaya.ting.android.opensdk.model.album.Album;
+import com.ximalaya.ting.android.opensdk.model.album.GussLikeAlbumList;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class RecommendPresenter implements IRecommendPresenter {
     private static final String TAG = "RECOMEND_PRESENTER";
@@ -10,6 +25,8 @@ public class RecommendPresenter implements IRecommendPresenter {
     private RecommendPresenter(){}
 
     private volatile static RecommendPresenter _instance = null;
+
+    private List<IRecommendViewCallBack> _callBackList = new ArrayList<>();
 
     /**
      * 获取单例
@@ -26,9 +43,43 @@ public class RecommendPresenter implements IRecommendPresenter {
         return _instance;
     }
 
+    /**
+     * 获取推荐内容
+     * 3.10.6
+     */
     @Override
     public void getRecommendList() {
+        Map<String, String> map = new HashMap<>();
+        //获取条数
+        map.put(DTransferConstants.LIKE_COUNT, Constants.GUESS_LIKE_COUNT);
+        CommonRequest.getGuessLikeAlbum(map, new IDataCallBack<GussLikeAlbumList>() {
 
+            @Override
+            public void onSuccess(@Nullable GussLikeAlbumList gussLikeAlbumList) {
+                if (gussLikeAlbumList != null) {
+                    List<Album> albumList = gussLikeAlbumList.getAlbumList();
+                    if (albumList != null) {
+                        Log.d(TAG, "GET GUESS LIKE ALBUM SUCC:" + albumList.size());
+                        handlerRecommendResult(albumList);
+                    }
+                }
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                Log.e(TAG, "ERROR:" + i);
+                Log.e(TAG, "ERROR MSG:" + s);
+            }
+        });
+    }
+
+    private void handlerRecommendResult(List<Album> albumList) {
+        //通知UI
+        if (_callBackList != null) {
+            for (IRecommendViewCallBack callBack : _callBackList) {
+                callBack.onRecommendListLoaded(albumList);
+            }
+        }
     }
 
     @Override
@@ -43,11 +94,15 @@ public class RecommendPresenter implements IRecommendPresenter {
 
     @Override
     public void registerViewCallBack(IRecommendViewCallBack callBack) {
-
+        if (_callBackList != null && !_callBackList.contains(callBack)) {
+            _callBackList.add(callBack);
+        }
     }
 
     @Override
     public void unRegisterViewCallBack(IRecommendViewCallBack callBack) {
-
+        if (_callBackList != null) {
+            _callBackList.remove(callBack);
+        }
     }
 }

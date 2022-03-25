@@ -150,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
                     LogUtils.d(TAG,"Categories Size: " + size);
                     for (Category category : categories) {
                         LogUtils.d(TAG, "category: " + category.getCategoryName());
+                        LogUtils.d(TAG, "category id: " + category.getId());
                     }
                 }
             }

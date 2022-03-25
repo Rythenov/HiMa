@@ -130,7 +130,7 @@ public class FluentListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             super(view);
             listItemView = view;
             listItemView.setOnClickListener(v ->{
-                Snackbar.Companion.make(listItemView, context.getString(R.string.list_item_click), Snackbar.LENGTH_SHORT, Snackbar.Style.REGULAR).show();
+                Snackbar.Companion.make(listItemView, context.getString(R.string.show_snack_bar), Snackbar.LENGTH_SHORT, Snackbar.Style.REGULAR).show();
             });
         }
 

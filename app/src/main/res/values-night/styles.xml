@@ -16,11 +16,6 @@
         <item name="android:windowLightStatusBar" tools:targetApi="23">false</item>
     </style>
 
-    <!--Launch Screen: This theme sets the launch screen for the app-->
-    <style name="AppTheme.Launcher" parent="Base.AppTheme.Launcher">
-        <item name="android:windowLightStatusBar" tools:targetApi="23">false</item>
-    </style>
-
     <!--Tooltip Demo-->
     <style name="Demo.Tooltip.Button" parent="Widget.FluentUI.Button.Borderless" />
 

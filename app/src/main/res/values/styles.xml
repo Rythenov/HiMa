@@ -144,16 +144,6 @@
 
     <style name="AppTheme.Neutral" parent="Base.AppTheme.Neutral" />
 
-    <style name="Base.AppTheme.Launcher">
-        <!--Use background instead of windowBackground to account for differences in bottom nav bar height treatment-->
-        <item name="android:background">@drawable/fluentui_launch_screen</item>
-        <item name="android:statusBarColor">?attr/fluentuiBackgroundColor</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
-    </style>
-
-    <!--Launch Screen: This theme sets the launch screen for the app-->
-    <style name="AppTheme.Launcher" parent="Base.AppTheme.Launcher" />
-
     <!--Demo-->
     <style name="Widget.DemoSubHeader" parent="@android:style/Widget.TextView">
         <item name="android:textAppearance">@style/TextAppearance.DemoSubHeader</item>

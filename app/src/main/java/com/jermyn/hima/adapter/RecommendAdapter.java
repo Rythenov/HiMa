@@ -2,6 +2,7 @@ package com.jermyn.hima.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -9,9 +10,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.TextViewCompat;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.jermyn.hima.R;
@@ -19,6 +24,7 @@ import com.jermyn.hima.list.ListItem;
 import com.jermyn.hima.list.base.IListItem;
 import com.microsoft.fluentui.listitem.ListItemView;
 import com.microsoft.fluentui.persona.AvatarSize;
+import com.microsoft.fluentui.persona.AvatarStyle;
 import com.microsoft.fluentui.persona.AvatarView;
 import com.microsoft.fluentui.snackbar.Snackbar;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
@@ -37,17 +43,32 @@ public class RecommendAdapter extends BaseQuickAdapter<Album, RecommendAdapter.L
     @Override
     protected void convert(@NonNull ListItemViewHolder holder, Album s) {
 
+        String coverUrl = s.getCoverUrlLarge();
+
+
         AvatarView avatarView = createExampleAvatarView(_context.getDrawable(R.drawable.avatar_carole_poland)
                 , s.getAlbumTitle()
                 , AvatarSize.XXLARGE
                 , _context);
+
+        Glide.with(_context).load(coverUrl).into(new CustomTarget<Drawable>(100, 100) {
+            @Override
+            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                avatarView.setImageDrawable(resource);
+            }
+
+            @Override
+            public void onLoadCleared(@Nullable Drawable placeholder) {
+                avatarView.setImageDrawable(_context.getDrawable(R.drawable.avatar_allan_munger));
+            }
+        });
 
         View accessoryView = createTextView("text", _context);
         accessoryView = createImageView(ContextCompat.getDrawable(_context, R.drawable.ic_more_vertical_24_filled), "imageView", _context);
 
         ListItem listItem = ListItem.createListItem(s.getAlbumTitle()
                 , s.getAlbumIntro()
-                , "热度:" + s.getPlayCount() + " " + "喜欢数:" + s.getFavoriteCount()
+                , "热度:" + s.getPlayCount() + " " + "声音数:" + s.getIncludeTrackCount()
                 , avatarView
                 , ListItemView.CustomViewSize.LARGE
                 , accessoryView
@@ -58,6 +79,8 @@ public class RecommendAdapter extends BaseQuickAdapter<Album, RecommendAdapter.L
                 }
                 , ListItemView.Companion.getDEFAULT_LAYOUT_DENSITY()
                 , false);
+        listItem.setTitleTruncateAt(TextUtils.TruncateAt.END);
+        listItem.setSubtitleTruncateAt(TextUtils.TruncateAt.END);
         holder.setListItem(listItem);
     }
 
@@ -91,6 +114,7 @@ public class RecommendAdapter extends BaseQuickAdapter<Album, RecommendAdapter.L
         AvatarView avatarView = new AvatarView(context);
         avatarView.setAvatarImageDrawable(avatarImageDrawable);
         avatarView.setAvatarSize(avatarSize);
+        avatarView.setAvatarStyle(AvatarStyle.SQUARE);
         if (avatarNameString != null) {
             avatarView.setName(avatarNameString);
         }

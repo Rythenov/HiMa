@@ -23,7 +23,8 @@
         android:theme="@style/AppTheme.Morandi">
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/AppTheme.Morandi">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -22,7 +22,8 @@ public class RecommendPresenter implements IRecommendPresenter {
     private static final String TAG = "RECOMEND_PRESENTER";
 
 
-    private RecommendPresenter(){}
+    private RecommendPresenter() {
+    }
 
     private volatile static RecommendPresenter _instance = null;
 
@@ -30,12 +31,13 @@ public class RecommendPresenter implements IRecommendPresenter {
 
     /**
      * 获取单例
+     *
      * @return
      */
-    public static RecommendPresenter getInstance(){
+    public static RecommendPresenter getInstance() {
         if (_instance == null) {
-            synchronized (RecommendPresenter.class){
-                if (_instance == null){
+            synchronized (RecommendPresenter.class) {
+                if (_instance == null) {
                     _instance = new RecommendPresenter();
                 }
             }
@@ -49,11 +51,13 @@ public class RecommendPresenter implements IRecommendPresenter {
      */
     @Override
     public void getRecommendList() {
+        updateLoading();
         Map<String, String> map = new HashMap<>();
         //获取条数
         map.put(DTransferConstants.LIKE_COUNT, Constants.GUESS_LIKE_COUNT);
+        map.put(DTransferConstants.CATEGORY_ID, Constants.GUESS_LIKE_CATEGORY_ID);
+        map.put("show_type", Constants.GUESS_LIKE_SHOW_TYPE);
         CommonRequest.getGuessLikeAlbum(map, new IDataCallBack<GussLikeAlbumList>() {
-
             @Override
             public void onSuccess(@Nullable GussLikeAlbumList gussLikeAlbumList) {
                 if (gussLikeAlbumList != null) {
@@ -69,16 +73,37 @@ public class RecommendPresenter implements IRecommendPresenter {
             public void onError(int i, String s) {
                 Log.e(TAG, "ERROR:" + i);
                 Log.e(TAG, "ERROR MSG:" + s);
+                handlerError();
             }
         });
     }
 
-    private void handlerRecommendResult(List<Album> albumList) {
+    private void handlerError() {
         //通知UI
         if (_callBackList != null) {
             for (IRecommendViewCallBack callBack : _callBackList) {
-                callBack.onRecommendListLoaded(albumList);
+                callBack.onNetWorkError();
             }
+        }
+    }
+
+    private void handlerRecommendResult(List<Album> albumList) {
+        if (_callBackList != null && albumList != null) {
+            if (albumList.size() == 0) {
+                for (IRecommendViewCallBack callBack : _callBackList) {
+                    callBack.onEmpty();
+                }
+            } else {
+                for (IRecommendViewCallBack callBack : _callBackList) {
+                    callBack.onRecommendListLoaded(albumList);
+                }
+            }
+        }
+    }
+
+    private void updateLoading(){
+        for (IRecommendViewCallBack callBack : _callBackList) {
+            callBack.onLoading();
         }
     }
 

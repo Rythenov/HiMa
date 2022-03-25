@@ -2,45 +2,17 @@
 
 
     <string name="app_name">HiMa</string>
-    <string name="single_line">单行 Single line</string>
-    <string name="short_duration">短持续时间</string>
-    <string name="short_duration_with_action">短持续时间 &amp;&amp; ACTION</string>
+
     <string name="action">ACTION</string>
     <string name="action_long">LONG TEXT ACTION</string>
-    <string name="response_action">响应动作</string>
-    <string name="long_duration_with_circular_progress_as_small_custom_view">长持续时间 &amp;&amp; 作为 Small CustomView 的圆形进度条</string>
+
     <string name="show_snack_bar">SHOW SNACK BAR</string>
-    <string name="short_duration_with_action_and_medium_custom_view">短持续时间 &amp;&amp; Medium CustomView &amp;&amp; Action</string>
-    <string name="persona_name_jermyn_gao">Jermyn Gao</string>
-    <string name="multi_line">多行 Multi line</string>
-    <string name="long_duration">长持续时间</string>
-    <string name="snack_bar_multiline_text">这是一个多行快餐栏。 最大行数设置为两行，其余文本将被截断。\n
-            翻译翻译，什么叫惊喜？什么，叫TMD，惊喜？？？ ---张牧之</string>
-    <string name="indefinite_duration_with_action_and_text_update">无限时模式 &amp;&amp; 文本更新 &amp;&amp; Action</string>
-    <string name="snack_bar_update_text">正在装糊涂....................</string>
-    <string name="long_duration_with_action_and_medium_custom_view">长持续时间 &amp;&amp; Medium CustomView</string>
-    <string name="long_duration_with_action_and_small_custom_view">长持续时间 &amp;&amp; Small CustomView</string>
-    <string name="short_duration_with_long_action">短持续时间 &amp;&amp; 长文本Action</string>
-    <string name="snackbar_headline_announcement_style">公告风格 Announcement style</string>
-    <string name="snackbar_announcement">这是一个公告风格快餐栏。 它用于传达新信息。</string>
-    <string name="list_item_click">你点击了列表项 List Item</string>
-    <string name="app_bar_layout_hide_icon_button">隐藏图标Hide icon</string>
-    <string name="app_bar_layout_searchbar_accessory_view_button">作为附件视图显示</string>
-    <string name="app_bar_layout_toggle_scroll_behavior_sub_header">滚动行为: %s</string>
-    <string name="app_bar_layout_toggle_scroll_behavior_button">切换滚动行为</string>
-    <string name="app_bar_layout_toggle_navigation_icon_sub_header">切换导航图标</string>
-    <string name="app_bar_layout_toggle_searchbar_sub_header">切换搜索栏布局样式</string>
-    <string name="app_bar_layout_toggle_theme_button">切换主题</string>
+
     <string name="item">项</string>
-    <string name="app_bar_layout_toggle_theme_sub_header">在主题之间切换（重新创建Activity）</string>
-    <string name="app_bar_layout_list_sub_header">额外的可滚动内容</string>
-    <string name="app_bar_layout_show_avatar_button">显示头像</string>
-    <string name="app_bar_layout_navigation_icon_clicked">点击导航按钮</string>
-    <string name="app_bar_layout_show_back_icon_button">显示返回按钮</string>
+
     <string name="app_bar_layout_menu_flag">Flag</string>
     <string name="app_bar_layout_menu_settings">Settings</string>
     <string name="app_bar_layout_menu_search">Search</string>
-    <string name="app_bar_layout_searchbar_action_view_button">作为操作视图显示</string>
 
 
     <string name="str_recommend">推荐</string>

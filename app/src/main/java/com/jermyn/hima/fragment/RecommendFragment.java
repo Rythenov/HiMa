@@ -22,6 +22,7 @@ import com.jermyn.hima.interfaces.IRecommendViewCallBack;
 import com.jermyn.hima.list.FluentListAdapter;
 import com.jermyn.hima.presenter.RecommendPresenter;
 import com.jermyn.hima.utils.Constants;
+import com.jermyn.hima.view.UILoader;
 import com.microsoft.fluentui.listitem.ListItemDivider;
 import com.microsoft.fluentui.snackbar.Snackbar;
 import com.ximalaya.ting.android.opensdk.constants.DTransferConstants;
@@ -49,6 +50,7 @@ public class RecommendFragment extends Fragment implements IRecommendViewCallBac
     private View _parentRootView;
     private RecommendAdapter _adapter;
     private RecommendPresenter _recommendPresenter;
+    private UILoader _uiLoader;
 
 
     public RecommendFragment(View parentRootView) {
@@ -64,6 +66,27 @@ public class RecommendFragment extends Fragment implements IRecommendViewCallBac
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if (_uiLoader == null) {
+            _uiLoader = new UILoader(getContext()) {
+                @Override
+                protected View getSuccessView(ViewGroup container) {
+                    return createSuccessView(inflater, container);
+                }
+            };
+        }
+
+        _recommendPresenter = RecommendPresenter.getInstance();
+        _recommendPresenter.registerViewCallBack(this);
+        _recommendPresenter.getRecommendList();
+
+        if (_uiLoader.getParent() instanceof ViewGroup) {
+            ((ViewGroup) _uiLoader.getParent()).removeView(_uiLoader);
+        }
+
+        return _uiLoader;
+    }
+
+    private View createSuccessView(LayoutInflater inflater, ViewGroup container) {
         if (_rootView == null) {
             _rootView = inflater.inflate(R.layout.fragment_recommend, container, false);
         }
@@ -80,15 +103,10 @@ public class RecommendFragment extends Fragment implements IRecommendViewCallBac
         _recyclerView.addItemDecoration(new ListItemDivider(getContext(), DividerItemDecoration.VERTICAL));
 
         _adapter.setOnItemClickListener((adapter, view, position) -> {
-            Album album = ((Album)adapter.getData().get(position));
+            Album album = ((Album) adapter.getData().get(position));
             String str = album.getAlbumTitle();
             Snackbar.Companion.make(_rootView, str, Snackbar.LENGTH_SHORT, Snackbar.Style.REGULAR).show();
         });
-
-        _recommendPresenter = RecommendPresenter.getInstance();
-        _recommendPresenter.registerViewCallBack(this);
-        _recommendPresenter.getRecommendList();
-
 
         return _rootView;
     }
@@ -96,18 +114,24 @@ public class RecommendFragment extends Fragment implements IRecommendViewCallBac
 
     @Override
     public void onRecommendListLoaded(List<Album> result) {
+        _uiLoader.updateUI(UILoader.UIStatus.SUCCESS);
         _adapter.setList(result);
-        _adapter.notifyDataSetChanged();
+        //_adapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onLoadedMore(List<Album> result) {
-
+    public void onNetWorkError() {
+        _uiLoader.updateUI(UILoader.UIStatus.NETWORK_ERROR);
     }
 
     @Override
-    public void onRefreshed(List<Album> result) {
+    public void onEmpty() {
+        _uiLoader.updateUI(UILoader.UIStatus.EMPTY);
+    }
 
+    @Override
+    public void onLoading() {
+        _uiLoader.updateUI(UILoader.UIStatus.LOADING);
     }
 
     @Override

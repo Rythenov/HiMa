@@ -1,7 +1,6 @@
 package com.jermyn.hima;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
@@ -9,15 +8,13 @@ import androidx.viewpager.widget.ViewPager;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.HorizontalScrollView;
-import android.widget.ImageView;
 
 import com.jermyn.hima.adapter.TabPagerAdapter;
+import com.jermyn.hima.base.HiMaActivity;
 import com.jermyn.hima.fragment.HistoryFragment;
 import com.jermyn.hima.fragment.RecommendFragment;
 import com.jermyn.hima.fragment.SubscriptionFragment;
@@ -37,9 +34,8 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends HiMaActivity {
 
     private static final String TAG = "MAIN_ACTIVITY";
 
@@ -64,13 +60,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
         appBar.setScrollBehavior(AppBarLayout.ScrollBehavior.PIN);
         getCategoryList();
         initTabLayout();
+    }
 
-
+    @Override
+    protected int getLayoutResId() {
+        return R.layout.activity_main;
     }
 
     @Override
@@ -172,10 +169,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home: {
-                //navigateUpTo(new Intent(this, MainActivity.class));
-                finish();
-            }
             case R.id.action_search: {
                 if (item.getActionView() instanceof Searchbar) {
                     ((Searchbar) item.getActionView()).requestSearchViewFocus();

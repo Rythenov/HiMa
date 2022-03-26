@@ -18,10 +18,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.jermyn.hima.R;
+import com.jermyn.hima.adapter.holder.ListItemViewHolder;
 import com.jermyn.hima.list.ListItem;
-import com.jermyn.hima.list.base.IListItem;
 import com.microsoft.fluentui.listitem.ListItemView;
 import com.microsoft.fluentui.persona.AvatarSize;
 import com.microsoft.fluentui.persona.AvatarStyle;
@@ -29,7 +28,7 @@ import com.microsoft.fluentui.persona.AvatarView;
 import com.microsoft.fluentui.snackbar.Snackbar;
 import com.ximalaya.ting.android.opensdk.model.album.Album;
 
-public class RecommendAdapter extends BaseQuickAdapter<Album, RecommendAdapter.ListItemViewHolder> {
+public class RecommendAdapter extends BaseQuickAdapter<Album, ListItemViewHolder> {
 
     Context _context;
     View _grandRootView;
@@ -45,12 +44,10 @@ public class RecommendAdapter extends BaseQuickAdapter<Album, RecommendAdapter.L
 
         String coverUrl = s.getCoverUrlLarge();
 
-
-        AvatarView avatarView = createExampleAvatarView(_context.getDrawable(R.drawable.avatar_carole_poland)
-                , s.getAlbumTitle()
-                , AvatarSize.XXLARGE
-                , _context);
-
+        AvatarView avatarView = new AvatarView(_context);
+        avatarView.setName(s.getAlbumTitle());
+        avatarView.setAvatarSize(AvatarSize.XXLARGE);
+        avatarView.setAvatarStyle(AvatarStyle.SQUARE);
         Glide.with(_context).load(coverUrl).into(new CustomTarget<Drawable>(100, 100) {
             @Override
             public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
@@ -105,54 +102,5 @@ public class RecommendAdapter extends BaseQuickAdapter<Album, RecommendAdapter.L
         imageView.setImageDrawable(drawable);
         imageView.setContentDescription(description);
         return imageView;
-    }
-
-    private AvatarView createExampleAvatarView(Drawable avatarImageDrawable
-            , String avatarNameString
-            , AvatarSize avatarSize
-            , Context context){
-        AvatarView avatarView = new AvatarView(context);
-        avatarView.setAvatarImageDrawable(avatarImageDrawable);
-        avatarView.setAvatarSize(avatarSize);
-        avatarView.setAvatarStyle(AvatarStyle.SQUARE);
-        if (avatarNameString != null) {
-            avatarView.setName(avatarNameString);
-        }
-        return avatarView;
-    }
-
-
-    protected class ListItemViewHolder extends BaseViewHolder {
-        private ListItemView listItemView;
-
-        ListItemViewHolder(ListItemView view){
-            super(view);
-            listItemView = view;
-        }
-
-        void setListItem(IListItem listItem) {
-            listItemView.setTitle(listItem.getTitle());
-            listItemView.setSubtitle(listItem.getSubTitle());
-            listItemView.setFooter(listItem.getFooter());
-
-            listItemView.setTitleMaxLines(listItem.getTitleMaxLines());
-            listItemView.setSubtitleMaxLines(listItem.getSubtitleMaxLines());
-            listItemView.setFooterMaxLines(listItem.getFooterMaxLines());
-
-            listItemView.setTitleTruncateAt(listItem.getTitleTruncateAt());
-            listItemView.setSubtitleTruncateAt(listItem.getSubtitleTruncateAt());
-            listItemView.setFooterTruncateAt(listItem.getFooterTruncateAt());
-
-            listItemView.setCustomView(listItem.getCustomView());
-            listItemView.setCustomViewSize(listItem.getCustomViewSize());
-            listItemView.setCustomAccessoryView(listItem.getCustomAccessoryView());
-            listItemView.setCustomSecondarySubtitleView(listItem.getCustomSecondarySubtitleView());
-            listItemView.setLayoutDensity(listItem.getLayoutDensity());
-        }
-
-        void clearCustomViews() {
-            listItemView.setCustomView(null);
-            listItemView.setCustomAccessoryView(null);
-        }
     }
 }

@@ -117,6 +117,10 @@
         <item name="android:background">@null</item>
         <item name="android:statusBarColor">?android:colorPrimary</item>
         <item name="android:windowLightStatusBar" tools:targetApi="23">false</item>
+        <item name="android:textColorPrimary">@color/fluentui_gray_900</item>
+        <item name="fluentuiBackgroundColor">@color/fluentui_white</item>
+        <item name="fluentuiForegroundColor">@color/fluentui_gray_900</item>
+        <item name="fluentuiForegroundSecondaryColor">@color/fluentui_gray_500</item>
     </style>
 
     <style name="AppTheme" parent="Base.AppTheme.FluentCommon" />

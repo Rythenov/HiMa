@@ -22,7 +22,7 @@ public interface IRecommendViewCallBack {
      * 刷新
      * @param result
      */
-    //void onRefreshed(List<Album> result);
+    void onRefreshed(List<Album> result);
 
     /**
      * 网络错误

@@ -1,5 +1,6 @@
 package com.jermyn.hima.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.jermyn.hima.DetailActivity;
 import com.jermyn.hima.R;
 import com.jermyn.hima.adapter.RecommendAdapter;
 import com.jermyn.hima.interfaces.IRecommendViewCallBack;
@@ -78,6 +80,10 @@ public class RecommendFragment extends Fragment
             _uiLoader.setRetryListener(this);
         }
 
+        _adapter = new RecommendAdapter(_parentRootView, getContext());
+
+
+
         _recommendPresenter = RecommendPresenter.getInstance();
         _recommendPresenter.registerViewCallBack(this);
         _recommendPresenter.getRecommendList();
@@ -99,16 +105,13 @@ public class RecommendFragment extends Fragment
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         _recyclerView.setLayoutManager(linearLayoutManager);
 
-        _adapter = new RecommendAdapter(_parentRootView, getContext());
-
         _recyclerView.setAdapter(_adapter);
 
         _recyclerView.addItemDecoration(new ListItemDivider(getContext(), DividerItemDecoration.VERTICAL));
 
         _adapter.setOnItemClickListener((adapter, view, position) -> {
             Album album = ((Album) adapter.getData().get(position));
-            String str = album.getAlbumTitle();
-            Snackbar.Companion.make(_rootView, str, Snackbar.LENGTH_SHORT, Snackbar.Style.REGULAR).show();
+            DetailActivity.open(getContext(), album);
         });
 
         return _rootView;
@@ -120,6 +123,12 @@ public class RecommendFragment extends Fragment
         _uiLoader.updateUI(UILoader.UIStatus.SUCCESS);
         _adapter.setList(result);
         //_adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onRefreshed(List<Album> result) {
+        _uiLoader.updateUI(UILoader.UIStatus.SUCCESS);
+        _adapter.setList(result);
     }
 
     @Override

@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 
 import com.jermyn.hima.R;
 import com.jermyn.hima.base.HiMaApplication;
+import com.microsoft.fluentui.progress.ProgressBar;
 
 /**
  * UI加载器
@@ -31,6 +32,8 @@ public abstract class UILoader extends LinearLayout {
     private View _successView = null;
     private View _networkErrorView = null;
     private View _emptyView = null;
+
+    private RetryListener _retryListener = null;
 
     public UILoader(Context context) {
         super(context);
@@ -91,7 +94,14 @@ public abstract class UILoader extends LinearLayout {
     }
 
     protected View getNetworkErrorView(){
-        return LayoutInflater.from(getContext()).inflate(R.layout.fragment_network_error_view, this, false);
+        View networkErrorView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_network_error_view, this, false);
+        networkErrorView.setOnClickListener(v -> {
+            //重新获取数据
+            if (_retryListener != null) {
+                _retryListener.onRetry();
+            }
+        });
+        return networkErrorView;
     }
 
     protected abstract View getSuccessView(ViewGroup container);
@@ -106,5 +116,17 @@ public abstract class UILoader extends LinearLayout {
 
     public void setStatus(UIStatus status) {
         this._status = status;
+    }
+
+    public RetryListener getRetryListener() {
+        return _retryListener;
+    }
+
+    public void setRetryListener(RetryListener retryListener) {
+        this._retryListener = retryListener;
+    }
+
+    public interface RetryListener {
+        void onRetry();
     }
 }

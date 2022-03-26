@@ -39,7 +39,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class RecommendFragment extends Fragment implements IRecommendViewCallBack {
+public class RecommendFragment extends Fragment
+        implements IRecommendViewCallBack
+        , UILoader.RetryListener {
 
     @BindView(R.id.recycler_view)
     RecyclerView _recyclerView;
@@ -73,6 +75,7 @@ public class RecommendFragment extends Fragment implements IRecommendViewCallBac
                     return createSuccessView(inflater, container);
                 }
             };
+            _uiLoader.setRetryListener(this);
         }
 
         _recommendPresenter = RecommendPresenter.getInstance();
@@ -139,6 +142,14 @@ public class RecommendFragment extends Fragment implements IRecommendViewCallBac
         super.onDestroyView();
         if (_recommendPresenter != null) {
             _recommendPresenter.unRegisterViewCallBack(this);
+        }
+    }
+
+    @Override
+    public void onRetry() {
+        //重试
+        if (_recommendPresenter != null) {
+            _recommendPresenter.getRecommendList();
         }
     }
 }

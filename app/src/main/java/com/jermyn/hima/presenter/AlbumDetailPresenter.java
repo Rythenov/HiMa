@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 
 import com.jermyn.hima.interfaces.IAlbumDetailPresenter;
 import com.jermyn.hima.interfaces.IAlbumDetailViewCallBack;
+import com.jermyn.hima.interfaces.IRecommendViewCallBack;
 import com.ximalaya.ting.android.opensdk.constants.DTransferConstants;
 import com.ximalaya.ting.android.opensdk.datatrasfer.CommonRequest;
 import com.ximalaya.ting.android.opensdk.datatrasfer.IDataCallBack;
@@ -61,14 +62,8 @@ public class AlbumDetailPresenter implements IAlbumDetailPresenter {
             public void onSuccess(@Nullable TrackList trackList) {
                 _currentPage++;
                 if (_callBackList != null) {
-                    if (trackList.getTracks().isEmpty()) {
-                        for (IAlbumDetailViewCallBack callBack : _callBackList) {
-                            callBack.onEmpty();
-                        }
-                    } else {
-                        for (IAlbumDetailViewCallBack callBack : _callBackList) {
-                            callBack.onDetailListLoadedMore(trackList.getTracks());
-                        }
+                    for (IAlbumDetailViewCallBack callBack : _callBackList) {
+                        callBack.onDetailListLoadedMore(trackList.getTracks());
                     }
                 }
             }
@@ -86,6 +81,7 @@ public class AlbumDetailPresenter implements IAlbumDetailPresenter {
 
     @Override
     public void load4Beginning() {
+        updateLoading();
         _currentPage = 1;
         getAlbumDetail(_album.getId(), _currentPage, new IDataCallBack<TrackList>() {
             @Override
@@ -122,6 +118,12 @@ public class AlbumDetailPresenter implements IAlbumDetailPresenter {
         map.put(DTransferConstants.PAGE, String.valueOf(page));
         map.put("count", String.valueOf(20));
         CommonRequest.getTracks(map, callBack);
+    }
+
+    private void updateLoading() {
+        for (IAlbumDetailViewCallBack callBack : _callBackList) {
+            callBack.onLoading();
+        }
     }
 
     @Override

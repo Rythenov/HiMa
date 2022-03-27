@@ -7,6 +7,7 @@ import android.os.Handler;
 import com.jermyn.hima.utils.LogUtils;
 import com.ximalaya.ting.android.opensdk.datatrasfer.CommonRequest;
 import com.ximalaya.ting.android.opensdk.datatrasfer.DeviceInfoProviderDefault;
+import com.ximalaya.ting.android.opensdk.player.XmPlayerManager;
 
 
 public class HiMaApplication extends Application {
@@ -45,6 +46,8 @@ public class HiMaApplication extends Application {
             }
         });
     }
+
+
 
     public static Context getContext() {
         return _context;

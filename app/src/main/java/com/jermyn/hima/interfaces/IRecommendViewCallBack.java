@@ -19,12 +19,6 @@ public interface IRecommendViewCallBack {
     //void onLoadedMore(List<Album> result);
 
     /**
-     * 刷新
-     * @param result
-     */
-    void onRefreshed(List<Album> result);
-
-    /**
      * 网络错误
      */
     void onNetWorkError();

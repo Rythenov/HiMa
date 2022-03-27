@@ -12,4 +12,6 @@ public class Constants {
 
     //Parcelable TAG
     public static final String PARCELABLE_TAG_ALBUM = "Album";
+    public static final String PARCELABLE_TAG_TRACK_LIST = "TrackList";
+    public static final String PARCELABLE_TAG_CURRENT_INDEX = "CurrentIndex";
 }

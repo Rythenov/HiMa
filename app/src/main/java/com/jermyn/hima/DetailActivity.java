@@ -20,10 +20,12 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.chad.library.adapter.base.listener.OnLoadMoreListener;
 import com.jermyn.hima.adapter.AlbumDetailAdapter;
 import com.jermyn.hima.adapter.RecommendAdapter;
 import com.jermyn.hima.base.HiMaActivity;
 import com.jermyn.hima.interfaces.IAlbumDetailViewCallBack;
+import com.jermyn.hima.interfaces.IRecommendViewCallBack;
 import com.jermyn.hima.presenter.AlbumDetailPresenter;
 import com.jermyn.hima.utils.Constants;
 import com.jermyn.hima.utils.LogUtils;
@@ -40,7 +42,7 @@ import java.util.zip.Inflater;
 
 import butterknife.BindView;
 
-public class DetailActivity extends HiMaActivity implements IAlbumDetailViewCallBack {
+public class DetailActivity extends HiMaActivity implements IAlbumDetailViewCallBack, SwipeRefreshLayout.OnRefreshListener, UILoader.RetryListener {
 
     private static final String TAG = "DETAIL_ACTIVITY";
 
@@ -84,7 +86,6 @@ public class DetailActivity extends HiMaActivity implements IAlbumDetailViewCall
         super.onCreate(savedInstanceState);
         _album = getIntent().getParcelableExtra(Constants.PARCELABLE_TAG_ALBUM);
         LogUtils.d(TAG, "Intent get album title : " + _album.getAlbumTitle());
-        _adapter = new AlbumDetailAdapter(rootView, this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         initView();
         initPresenter();
@@ -117,13 +118,27 @@ public class DetailActivity extends HiMaActivity implements IAlbumDetailViewCall
             }
         });
 
+        _adapter = new AlbumDetailAdapter(rootView, this);
+        _adapter.getLoadMoreModule().setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                _albumDetailPresenter.loadMore();
+            }
+        });
+        _adapter.getLoadMoreModule().setAutoLoadMore(true);
+        //当自动加载开启，同时数据不满一屏时，是否继续执行自动加载更多(默认为true)
+        _adapter.getLoadMoreModule().setEnableLoadMoreIfNotFullPage(false);
+
         _uiLoader = new UILoader(this) {
             @Override
             protected View getSuccessView(ViewGroup container) {
                 return createSuccessView(container);
             }
         };
+        _uiLoader.setRetryListener(this);
+
         mainContainer.addView(_uiLoader);
+        mainContainer.setOnRefreshListener(this);
     }
 
     private View createSuccessView(ViewGroup container) {
@@ -143,6 +158,7 @@ public class DetailActivity extends HiMaActivity implements IAlbumDetailViewCall
         recyclerView.addItemDecoration(new ListItemDivider(this, DividerItemDecoration.VERTICAL));
 
         _adapter.setOnItemClickListener((adapter, view, position) -> {
+            PlayerActivity.open(this, _adapter.getData(), position);
         });
 
         return _recyclerViewLayout;
@@ -150,11 +166,13 @@ public class DetailActivity extends HiMaActivity implements IAlbumDetailViewCall
 
     @Override
     public void onNetWorkError() {
+        mainContainer.setRefreshing(false);
         _uiLoader.updateUI(UILoader.UIStatus.NETWORK_ERROR);
     }
 
     @Override
     public void onEmpty() {
+        mainContainer.setRefreshing(false);
         _uiLoader.updateUI(UILoader.UIStatus.EMPTY);
     }
 
@@ -165,6 +183,7 @@ public class DetailActivity extends HiMaActivity implements IAlbumDetailViewCall
 
     @Override
     public void onDetailListLoadedBeginning(List<Track> tracks) {
+        mainContainer.setRefreshing(false);
         _uiLoader.updateUI(UILoader.UIStatus.SUCCESS);
         _adapter.setList(tracks);
     }
@@ -173,6 +192,11 @@ public class DetailActivity extends HiMaActivity implements IAlbumDetailViewCall
     public void onDetailListLoadedMore(List<Track> tracks) {
         _uiLoader.updateUI(UILoader.UIStatus.SUCCESS);
         _adapter.addData(tracks);
+        if (tracks.size() < 20){
+            _adapter.getLoadMoreModule().loadMoreEnd();
+        } else{
+            _adapter.getLoadMoreModule().loadMoreComplete();
+        }
     }
 
     @Override
@@ -181,5 +205,15 @@ public class DetailActivity extends HiMaActivity implements IAlbumDetailViewCall
         if (_albumDetailPresenter != null) {
             _albumDetailPresenter.unRegisterViewCallBack(this);
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        _albumDetailPresenter.pull2Refresh();
+    }
+
+    @Override
+    public void onRetry() {
+        _albumDetailPresenter.load4Beginning();
     }
 }

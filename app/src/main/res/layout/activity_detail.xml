@@ -18,7 +18,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/fluentui_white"
-            android:padding="@dimen/dp_10">
+            android:paddingLeft="@dimen/dp_10"
+            android:paddingTop="@dimen/dp_10"
+            android:paddingRight="@dimen/dp_10">
 
             <com.microsoft.fluentui.persona.AvatarView
                 android:id="@+id/av"
@@ -26,20 +28,19 @@
                 android:layout_height="wrap_content"
                 app:fluentui_avatarSize="xxlarge"
                 app:fluentui_avatarStyle="square"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <LinearLayout
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_marginLeft="@dimen/dp_10"
                 android:layout_marginRight="@dimen/dp_10"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="@+id/av"
                 app:layout_constraintLeft_toRightOf="@+id/av"
                 app:layout_constraintRight_toLeftOf="@+id/btn_subscribe"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent">
+                app:layout_constraintTop_toTopOf="@+id/av">
 
                 <TextView
                     android:id="@+id/tv_intro"
@@ -47,8 +48,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
-                    android:maxLines="3"
-                    android:text="这里是简介"/>
+                    android:maxLines="2"
+                    android:text="这里是简介" />
 
                 <TextView
                     android:id="@+id/tv_author"
@@ -60,31 +61,95 @@
                     android:text="这里是作者"
                     android:textColor="@color/fluentui_gray_600" />
             </LinearLayout>
+
             <com.microsoft.fluentui.widget.Button
                 android:id="@+id/btn_subscribe"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableStart="@drawable/ic_add_circle_24_filled"
+                android:drawableStart="@drawable/ic_fluent_add_16_filled"
+                android:drawableTint="@color/fluentui_white"
                 android:text="订阅"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintRight_toRightOf="parent"/>
+                app:layout_constraintBottom_toBottomOf="@+id/av"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/av" />
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/demo_headline_divider_height"
+                android:layout_marginTop="@dimen/dp_10"
+                android:background="@drawable/ms_row_divider"
+                app:layout_constraintTop_toBottomOf="@+id/av" />
+
+            <LinearLayout
+                android:id="@+id/player_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/dp_10"
+                android:paddingRight="@dimen/dp_10"
+                app:layout_constraintTop_toBottomOf="@+id/divider">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_fluent_play_circle_28_regular"
+                        app:tint="?attr/colorPrimary" />
+
+                    <TextView
+                        style="@style/TextAppearance.FluentUI.SubHeading1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/dp_10"
+                        android:text="继续播放" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/TextAppearance.FluentUI.SubHeading1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="选集" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_fluent_chevron_down_28_selector"
+                        app:tint="?attr/colorPrimary" />
+                </LinearLayout>
+            </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/demo_headline_divider_height"
                 android:layout_marginTop="@dimen/dp_10"
-                app:layout_constraintTop_toBottomOf="@+id/av"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:background="@drawable/ms_row_divider" />
+                android:background="@drawable/ms_row_divider"
+                app:layout_constraintTop_toBottomOf="@+id/player_layout" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.microsoft.fluentui.appbarlayout.AppBarLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/main_container"
-         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"></androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

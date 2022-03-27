@@ -15,4 +15,10 @@ public class TinyTools {
 
         return simpleDateFormat.format(new Date(timestamp));
     }
+
+    public static String formatDuration(int duration) {
+        int min = duration / 60;
+        int sec = duration % 60;
+        return (min == 0 ? "00" : min) + ":" + (sec == 0 ? "00" : sec);
+    }
 }

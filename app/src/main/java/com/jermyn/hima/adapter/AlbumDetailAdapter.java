@@ -12,6 +12,8 @@ import androidx.core.widget.TextViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.module.BaseLoadMoreModule;
+import com.chad.library.adapter.base.module.LoadMoreModule;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.jermyn.hima.R;
 import com.jermyn.hima.adapter.holder.ListItemViewHolder;
@@ -29,7 +31,7 @@ import com.ximalaya.ting.android.opensdk.model.track.Track;
  *
  * @author CHCNAV BDZH Jermyn on 2022/3/26
  */
-public class AlbumDetailAdapter extends BaseQuickAdapter<Track, ListItemViewHolder> {
+public class AlbumDetailAdapter extends BaseQuickAdapter<Track, ListItemViewHolder> implements LoadMoreModule {
 
     Context _context;
     View _grandRootView;
@@ -50,11 +52,11 @@ public class AlbumDetailAdapter extends BaseQuickAdapter<Track, ListItemViewHold
         TextView customView = new TextView(_context);
         TextViewCompat.setTextAppearance(customView, R.style.TextAppearance_ListItemValue);
         int position = ((RecyclerView.ViewHolder)((BaseViewHolder)holder)).getPosition();
-        customView.setText(String.valueOf(position));
+        customView.setText(String.valueOf(position + 1));
         customView.setGravity(Gravity.CENTER);
 
         ListItem listItem = new ListItem(track.getTrackTitle());
-        listItem.setFooter(String.valueOf(track.getPlayCount()));
+        listItem.setFooter("播放量: " + track.getPlayCount() + "  时长: " + TinyTools.formatDuration(track.getDuration()));
         listItem.setCustomAccessoryView(customAccessoryView);
         listItem.setCustomView(customView);
         listItem.setCustomViewSize(ListItemView.CustomViewSize.LARGE);
@@ -70,5 +72,11 @@ public class AlbumDetailAdapter extends BaseQuickAdapter<Track, ListItemViewHold
         ListItemView view = new ListItemView(_context);
         view.setLayoutParams(lp);
         return new ListItemViewHolder(view);
+    }
+
+    @NonNull
+    @Override
+    public BaseLoadMoreModule addLoadMoreModule(@NonNull BaseQuickAdapter<?, ?> baseQuickAdapter) {
+        return new BaseLoadMoreModule(baseQuickAdapter);
     }
 }

@@ -1,6 +1,8 @@
 package com.jermyn.hima.interfaces;
 
-public interface IRecommendPresenter {
+import com.jermyn.hima.base.IBasePresenter;
+
+public interface IRecommendPresenter extends IBasePresenter<IRecommendViewCallBack> {
     /**
      * 获取推荐内容
      */
@@ -15,18 +17,5 @@ public interface IRecommendPresenter {
      * 上拉加载
      */
     void loadMore();
-
-    /**
-     * 注册UI的回调
-     * @param callBack
-     */
-    void registerViewCallBack(IRecommendViewCallBack callBack);
-
-    /**
-     * 取消UI的回调
-     * @param callBack
-     */
-    void unRegisterViewCallBack(IRecommendViewCallBack callBack);
-
 
 }

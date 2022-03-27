@@ -5,6 +5,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import android.Manifest;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.view.View;
 
 import com.jermyn.hima.adapter.TabPagerAdapter;
 import com.jermyn.hima.base.HiMaActivity;
+import com.jermyn.hima.base.HiMaApplication;
 import com.jermyn.hima.fragment.HistoryFragment;
 import com.jermyn.hima.fragment.RecommendFragment;
 import com.jermyn.hima.fragment.SubscriptionFragment;
@@ -23,10 +25,12 @@ import com.microsoft.fluentui.appbarlayout.AppBarLayout;
 import com.microsoft.fluentui.search.Searchbar;
 import com.microsoft.fluentui.tablayout.TabLayout;
 import com.microsoft.fluentui.util.ThemeUtil;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.ximalaya.ting.android.opensdk.datatrasfer.CommonRequest;
 import com.ximalaya.ting.android.opensdk.datatrasfer.IDataCallBack;
 import com.ximalaya.ting.android.opensdk.model.category.Category;
 import com.ximalaya.ting.android.opensdk.model.category.CategoryList;
+import com.ximalaya.ting.android.opensdk.player.XmPlayerManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,8 +38,18 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 
 public class MainActivity extends HiMaActivity {
+
+    private static final String[] permissionsGroup = new String[]{
+            Manifest.permission.INTERNET,
+            Manifest.permission.ACCESS_WIFI_STATE,
+            Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.CHANGE_NETWORK_STATE,
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.FOREGROUND_SERVICE};
 
     private static final String TAG = "MAIN_ACTIVITY";
 
@@ -61,8 +75,43 @@ public class MainActivity extends HiMaActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         appBar.setScrollBehavior(AppBarLayout.ScrollBehavior.PIN);
-        getCategoryList();
+        //getCategoryList();
         initTabLayout();
+        getPermission();
+        XmPlayerManager.getInstance(HiMaApplication.getContext()).init();
+
+    }
+
+    private void getPermission() {
+        RxPermissions rxPermissions = new RxPermissions(MainActivity.this);
+        rxPermissions.request(permissionsGroup)
+                .subscribe(new Observer<Boolean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        if (aBoolean) {
+                            //Toast.makeText(RxPermissionsActivity.this, "已获取权限，可以干想干的咯", Toast.LENGTH_LONG).show();
+                        } else {
+                            //只有用户拒绝开启权限，且选了不再提示时，才会走这里，否则会一直请求开启
+                            //Toast.makeText(RxPermissionsActivity.this, "主人，我被禁止啦，去设置权限设置那把我打开哟", Toast.LENGTH_LONG).show();
+                            finish();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
     @Override
@@ -78,7 +127,7 @@ public class MainActivity extends HiMaActivity {
         optionsMenu = menu;
         for (int index = 0; index < menu.size(); index++) {
             MenuItem menuItem = menu.getItem(index);
-            if (menuItem.getItemId() == R.id.action_search){
+            if (menuItem.getItemId() == R.id.action_search) {
                 menuItem.setActionView(_searchBar);
                 menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItem.SHOW_AS_ACTION_ALWAYS);
             }
@@ -130,12 +179,12 @@ public class MainActivity extends HiMaActivity {
         _tbInside.setupWithViewPager(viewPager);
     }
 
-    private View createPageView(int color){
+    private View createPageView(int color) {
         View view = new View(this);
         view.setBackgroundColor(ContextCompat.getColor(this, color));
         return view;
     }
-
+/*
     private void getCategoryList() {
         Map<String, String> map = new HashMap<String, String>();
         CommonRequest.getCategories(map, new IDataCallBack<CategoryList>() {
@@ -157,6 +206,12 @@ public class MainActivity extends HiMaActivity {
                 LogUtils.e(TAG, "onError: " + code + " ErrorMessage: " + message);
             }
         });
+    }*/
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        XmPlayerManager.release();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.jermyn.hima.interfaces;
 
+import com.jermyn.hima.base.IBasePresenter;
 import com.ximalaya.ting.android.opensdk.datatrasfer.IDataCallBack;
 import com.ximalaya.ting.android.opensdk.model.track.TrackList;
 
@@ -10,7 +11,7 @@ import com.ximalaya.ting.android.opensdk.model.track.TrackList;
  *
  * @author CHCNAV BDZH Jermyn on 2022/3/26
  */
-public interface IAlbumDetailPresenter {
+public interface IAlbumDetailPresenter extends IBasePresenter<IAlbumDetailViewCallBack> {
     /**
      * 下拉刷新
      */
@@ -25,17 +26,5 @@ public interface IAlbumDetailPresenter {
      * 获取专辑详情
      */
     void load4Beginning();
-
-    /**
-     * 注册UI的回调
-     * @param callBack
-     */
-    void registerViewCallBack(IAlbumDetailViewCallBack callBack);
-
-    /**
-     * 取消UI的回调
-     * @param callBack
-     */
-    void unRegisterViewCallBack(IAlbumDetailViewCallBack callBack);
 
 }

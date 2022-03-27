@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -43,14 +44,14 @@ import butterknife.ButterKnife;
 
 public class RecommendFragment extends Fragment
         implements IRecommendViewCallBack
-        , UILoader.RetryListener {
+        , UILoader.RetryListener, SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.recycler_view)
     RecyclerView _recyclerView;
 
     private static final String TAG = "RECOMMEND_FRAGMENT";
 
-    private View _rootView;
+    private SwipeRefreshLayout _rootView;
     private View _parentRootView;
     private RecommendAdapter _adapter;
     private RecommendPresenter _recommendPresenter;
@@ -82,8 +83,6 @@ public class RecommendFragment extends Fragment
 
         _adapter = new RecommendAdapter(_parentRootView, getContext());
 
-
-
         _recommendPresenter = RecommendPresenter.getInstance();
         _recommendPresenter.registerViewCallBack(this);
         _recommendPresenter.getRecommendList();
@@ -97,7 +96,8 @@ public class RecommendFragment extends Fragment
 
     private View createSuccessView(LayoutInflater inflater, ViewGroup container) {
         if (_rootView == null) {
-            _rootView = inflater.inflate(R.layout.fragment_recommend, container, false);
+            _rootView = (SwipeRefreshLayout) inflater.inflate(R.layout.fragment_recommend, container, false);
+            _rootView.setOnRefreshListener(this);
         }
         ButterKnife.bind(this, _rootView);
 
@@ -120,24 +120,21 @@ public class RecommendFragment extends Fragment
 
     @Override
     public void onRecommendListLoaded(List<Album> result) {
+        _rootView.setRefreshing(false);
         _uiLoader.updateUI(UILoader.UIStatus.SUCCESS);
         _adapter.setList(result);
         //_adapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onRefreshed(List<Album> result) {
-        _uiLoader.updateUI(UILoader.UIStatus.SUCCESS);
-        _adapter.setList(result);
-    }
-
-    @Override
     public void onNetWorkError() {
+        _rootView.setRefreshing(false);
         _uiLoader.updateUI(UILoader.UIStatus.NETWORK_ERROR);
     }
 
     @Override
     public void onEmpty() {
+        _rootView.setRefreshing(false);
         _uiLoader.updateUI(UILoader.UIStatus.EMPTY);
     }
 
@@ -160,5 +157,10 @@ public class RecommendFragment extends Fragment
         if (_recommendPresenter != null) {
             _recommendPresenter.getRecommendList();
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        onRetry();
     }
 }
